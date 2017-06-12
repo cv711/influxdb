@@ -60,9 +60,6 @@ type PointsWriter struct {
 		WriteToShard(shardID uint64, points []models.Point) error
 	}
 
-	Subscriber interface {
-		Points() chan<- *WritePointsRequest
-	}
 	subPoints []chan<- *WritePointsRequest
 
 	stats *WriteStatistics
@@ -127,9 +124,6 @@ func (w *PointsWriter) Open() error {
 	w.mu.Lock()
 	defer w.mu.Unlock()
 	w.closing = make(chan struct{})
-	if w.Subscriber != nil {
-		w.AddWriteSubscriber(w.Subscriber.Points())
-	}
 	return nil
 }
 
